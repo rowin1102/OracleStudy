@@ -82,8 +82,9 @@ mod() : 나머지를 구하는 함수
 power() : 거듭제곱을 구하는 함수
 sqrt() : 제곱근(루트)을 구하는 함수
 */
-
-
+select mod(99, 4) "99를 4로 나눈 나머지" from dual;
+select power(2, 10) "2의 10승" from dual;
+select sqrt(49) "49의 제곱근" from dual;
 
 
 
