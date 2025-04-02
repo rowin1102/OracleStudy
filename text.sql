@@ -1,1 +1,1 @@
-adfasdfsad
+-- Oracle Git  연동 test.sql입니다.
