@@ -218,3 +218,35 @@ select
         else '부서명확인안됨'
         end as dep_name
     from employees;
+    
+--------------------------------------------------------------------------------
+
+-- 1.
+select substr(hiredate, 1, 5) from emp;
+
+-- 2.
+select ename, hiredate from emp where substr(hiredate, 4, 2) = 04;
+
+-- 3.
+select ename, empno from emp where mod(empno, 2) = 0;
+
+-- 4.
+select to_char(hiredate, 'yy/mon/dy') from emp;
+
+-- 5.
+select sysdate - to_date('01-01-2025', 'dd-mm-yyyy') from dual;
+
+-- 6.
+select nvl(mgr, 0) from emp;
+
+--7.
+select job, sal,
+    decode (
+    job,
+    'CLERK', sal + 200,
+    'SALESMAN', sal + 180,
+    'MANAGER', sal + 150,
+    'PRESIDENT', sal + 100,
+    sal
+    ) as "급여인상"
+from emp;
