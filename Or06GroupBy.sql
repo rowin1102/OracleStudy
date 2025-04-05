@@ -205,3 +205,36 @@ select
     from employees where manager_id is not null
     group by job_id having not min(salary)<3000
     order by min(salary) desc;
+
+--------------------------------------------------------------------------------
+
+-- 1.
+select
+    min(SALARY) MinPay, max(SALARY) MaxPay, round(avg(SALARY)) AvgPay
+from employees;
+
+-- 2.
+select
+    job_id, to_char(max(SALARY), '999,000') MaxPay, to_char(min(SALARY), '999,000') MinPay, 
+    to_char(round(sum(salary)), '999,000') SumPay, to_char(round(avg(SALARY)), '999,000') AvgPay
+from employees group by job_id;
+
+-- 3.
+select
+    job_id, count(*) "직원합계"
+from employees group by job_id order by count(*);
+
+-- 4.
+select
+    job_id, count(*) "합계인원수"
+from employees where salary >= 10000 group by job_id;
+
+-- 5.
+select
+    max(salary) - min(salary) "최고최소급여차"
+from employees;
+
+-- 6.
+select
+    department_id, count(*), to_char(round(avg(salary), 2), '99,000.00') "평균급여"
+from employees group by department_id;
