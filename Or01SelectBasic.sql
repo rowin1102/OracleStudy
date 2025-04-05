@@ -158,7 +158,7 @@ SELECT * FROM employees WHERE phone_number like '%1344%';
 /*
 퀴즈] 년도에 상관없이 2월에 입사한 사원을 인출하시오.
 */
-SELECT * FROM employees WHERE hire_date like '_2%';
+SELECT * FROM employees WHERE hire_date like '__/02/%';
 
 /*
 레코드 정렬하기(Sorting)
@@ -198,17 +198,49 @@ select ename, sal, sal+300 from emp;
 select ename, sal, sal*12+100 from emp order by sal*12+100 desc;
 
 -- 3.
+select ename, sal from emp where sal > 2000 order by sal desc;
 
+-- 4.
+select ename, deptno from emp where empno = '7782';
 
+-- 5.
+select ename, sal from emp where not sal between 2000 and 3000;
+select ename, sal from emp where sal < 2000 or sal > 3000;
 
+-- 6.
+select ename, job, hiredate from emp where hiredate 
+    between '81/02/20' and '81/05/01';
 
+-- 7.
+select ename, deptno from emp where deptno in (20, 30) order by ename desc;
 
+-- 8.
+select ename, sal, deptno from emp where sal between 2000 and 3000 and 
+    deptno in (20, 30) order by ename;
 
+-- 9.
+select ename, hiredate from emp where hiredate like '81%';
 
+-- 10.
+select ename, job from emp where mgr is null;
 
+-- 11.
+select ename, sal, comm from emp where comm is not null and comm > 0
+    order by sal desc, comm desc;
 
+-- 12.
+select ename from emp where ename like '__R%';
 
+-- 13.
+select ename from emp where ename like '%A%' and ename like '%E%';
 
+-- 14.
+select ename, job, sal from emp where job in ('CLERK', 'SALESMAN') and 
+    sal not in (1600, 950, 1300);
+
+-- 15.
+select ename, sal, comm from emp where comm >= 500;
+    
 
 
 
