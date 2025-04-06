@@ -402,6 +402,76 @@ where
     to_char(hire_date, 'yyyy') = '2005';
 */
 
+--------------------------------------------------------------------------------
+-- 1.
+select
+    E.department_id, department_name
+from employees E, departments D
+where E.department_id = D.department_id and
+    first_name = 'Janette';
 
+-- 2.
+select
+    first_name, last_name, department_name, city
+from employees
+    inner join departments using(department_id)
+    inner join locations using(location_id);
 
+-- 3.
+select
+    first_name, last_name, department_name
+from employees
+    inner join departments using(department_id)
+where first_name like 'A%';
+    
+-- 4.
+select
+    first_name, job_title, department_id, department_name
+from locations
+    inner join departments using(location_id)
+    inner join employees using(department_id)
+    inner join jobs using(job_id)
+where city = 'Toronto' and state_province = 'Ontario';
 
+-- 5.
+select
+    first_name, last_name, E.department_id, department_name, city
+from employees E, departments D, locations L
+where
+    E.department_id = D.department_id and
+    D.location_id = L.location_id and
+    commission_pct is not null;
+    
+-- 6.
+select
+    distinct job_id, department_id, department_id, city
+from employees
+    inner join departments using(department_id)
+    inner join locations using(location_id)
+where department_id = 50;
+
+-- 7.
+select
+    distinct empManager.first_name, empManager.last_name, 
+    empManager.job_id, empManager.salary
+from employees empCleck, employees empManager
+where empCleck.manager_id = empManager.employee_id and
+    empCleck.job_id = 'FI_ACCOUNT';
+
+-- 8.
+select
+    D.department_id, D.department_name, E.first_name, E.last_name, 
+    E.salary, E.job_id
+from employees E
+    inner join departments D
+        on E.employee_id = D.manager_id
+order by department_id;
+    
+-- 9.
+select
+    to_char(hire_date, 'yyyy'), avg(salary)
+from employees
+    inner join jobs using(job_id)
+where job_title = 'Sales Manager'
+group by to_char(hire_date, 'yyyy')
+order by to_char(hire_date, 'yyyy');
