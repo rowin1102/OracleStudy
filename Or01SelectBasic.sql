@@ -189,16 +189,16 @@ SELECT * FROM employees WHERE commission_pct IS NULL;
 -- 영업사원이면서 급여가 8000이상인 사원을 조회하시오.
 SELECT * FROM employees WHERE salary >= 8000 AND commission_pct IS NOT NULL;
 
----------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 -- 1.
 select ename, sal, sal+300 from emp;
 
 -- 2.
-select ename, sal, sal*12+100 from emp order by sal*12+100 desc;
+select ename, sal, sal*12+100 from emp order by sal desc;
 
 -- 3.
-select ename, sal from emp where sal > 2000 order by sal desc;
+select ename, sal from emp where sal > 2000 order by ename desc, sal desc;
 
 -- 4.
 select ename, deptno from emp where empno = '7782';
