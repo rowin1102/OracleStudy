@@ -223,6 +223,7 @@ select
 
 -- 1.
 select substr(hiredate, 1, 5) from emp;
+select to_char(hiredate, 'yy/mm') from emp;
 
 -- 2.
 select ename, hiredate from emp where substr(hiredate, 4, 2) = 04;
@@ -241,8 +242,7 @@ select nvl(mgr, 0) from emp;
 
 --7.
 select job, sal,
-    decode (
-    job,
+    decode (job,
     'CLERK', sal + 200,
     'SALESMAN', sal + 180,
     'MANAGER', sal + 150,
