@@ -67,6 +67,8 @@ as
 */
 SELECT * FROM view_employees;
 
+--------------------------------------------------------------------------------
+
 /*
 퀴즈] 담당업무 아이디가 ST_MAN인 사원의 사원번호, 이름, 이메일, 매니져아이디를
     조회할 수 있도록 작성하시오.
@@ -80,6 +82,8 @@ as
     from employees where job_id='ST_MAN';
 
 SELECT * FROM emp_st_man_view;
+
+--------------------------------------------------------------------------------
 
 /*
 퀴즈] 사원번호, 이름, 연봉을 계산하여 출력하는 뷰를 생성하시오.
@@ -113,11 +117,43 @@ as
     ltrim(to_char((salary+(salary*nvl(commission_pct, 0)))*12, '999,000'))
     from employees;
 
+--------------------------------------------------------------------------------
 
+/*
+-조인을 통한 View 생성
+시나리오] 사원테이블과 부서테이블, 지역테이블을 조인하여 다음 조건에 맞는 
+뷰를 생성하시오.
+출력항목 : 사원번호, 전체이름, 부서번호, 부서명, 입사일자, 지역명
+뷰의명칭 : v_emp_join
+뷰의컬럼 : empid, fullname, deptid, deptname, hdate, locname
+컬럼의 출력형태 : 
+	fullname => first_name+last_name 
+	hdate => 0000년00월00일
+    locname => XXX주의 YYY (ex : Texas주의 Southlake)	
+*/
+-- 1. select문 작성
+select
+    employee_id, first_name||' '||last_name, department_id,
+    department_name, to_char(hire_date, 'yyyy"년"mm"월"dd"일"'),
+    state_province||'주의 '||city
+from employees
+    inner join departments using(department_id)
+    inner join locations using(location_id);
 
+-- 2. View 생성
+create or replace view v_emp_join 
+    (empid, fullname, deptid, deptname, hdate, locname)
+as
+    select
+        employee_id, first_name||' '||last_name, department_id,
+        department_name, to_char(hire_date, 'yyyy"년"mm"월"dd"일"'),
+        state_province||'주의 '||city
+    from employees
+        inner join departments using(department_id)
+        inner join locations using(location_id);
 
+-- 3. 데이터 사전에서 확인
+SELECT * FROM user_views;
 
-
-
-
-
+-- 4. View 확인(복잡한 쿼리문을 View를 통해 간단히 조회할 수 있다.)
+select * from v_emp_join;
