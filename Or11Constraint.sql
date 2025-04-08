@@ -367,20 +367,53 @@ null을 입력할 수 없으므로 에러가 발생된다.
 */
 insert into tb_not_null (id, pw, name) values ('hong6', '6666', '육길동');
 
+--------------------------------------------------------------------------------
 
+/*
+default : insert시 아무런 값도 입력하지 않았을때 자동으로 삽입되는 데이터를
+지정할 수 있다.
+*/
+create table tb_dafault (
+    id varchar(30) not null,
+    pw varchar2(50) default 'qwer'
+);
+SELECT * FROM tb_dafault;
+insert into tb_dafault values ('aaa', '123'); -- 123 입력
+insert into tb_dafault (id) values ('bbb'); -- 컬럼을 제외하면 default값 입력
+insert into tb_dafault values ('ccc', ''); -- null입력
+insert into tb_dafault values ('ddd', ' '); -- 공백(space) 입력
+insert into tb_dafault values ('eee', default); -- default값 입력
+/*
+default값을 입력하려면 insert문에서 컬럼을 제외시키거나 default 키워드를
+사용해야 한다.
+*/
 
+--------------------------------------------------------------------------------
 
+/*
+check : Domain 무결성을 유지하기 위한 제약조건으로 해당 컬럼에 잘못된 데이터가
+    입력되지 않도록 유지한다.
+*/
+-- M, F만 입력을 허용하는 check 제약조건 지정
+create table tb_check1 (
+    gender char(1) not null
+        constraint check_gender
+            check(gender in ('M', 'F'))
+);
+insert into tb_check1 values ('M');
+insert into tb_check1 values ('F');
+-- check 제약조건 위배로 오류발생
+insert into tb_check1 values ('T');
+-- 입력된 데이터가 컬럼의 크기보다 크므로 오류발생
+insert into tb_check1 values ('트렌스젠더');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- 10이하의 값만 입력할 수 있는 Check 제약조건 지정
+create table tb_check2 (
+    sale_count number not null
+        check (sale_count<=10)
+);
+-- 9, 10은 입력 성공
+insert into tb_check2 values (9);
+insert into tb_check2 values (10);
+-- 11은 제약조건 위배로 입력 실패. 오류 발생됨.
+insert into tb_check2 values (11);
