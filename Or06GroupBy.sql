@@ -236,5 +236,10 @@ from employees;
 
 -- 6.
 select
-    department_id, count(*), to_char(round(avg(salary), 2), '99,000.00') "평균급여"
-from employees group by department_id;
+    department_id, count(*), ltrim(to_char(avg(salary), '99,000.00')) "평균급여"
+from employees group by department_id
+order by department_id;
+/*
+이와 같이 복잡한 계산식이 포함된 컬럼을 기준으로 정렬할때는 별칭을 
+사용하는 것이 좋다.
+*/
