@@ -174,7 +174,7 @@ create or replace procedure pcd_update_salary
     )
 is -- 추가적인 변수 선이 필요없으므로 생략
 begin
--- 실제 없데이트0를 처리하는 쿼리문으로 in파라미터를 통해 값 설정
+-- 실제 없데이트를 처리하는 쿼리문으로 in파라미터를 통해 값 설정
     update zcopy_employees 
         set salary = p_salary
         where employee_id = p_empid;
@@ -371,7 +371,7 @@ begin
         dbms_output.put_line('insert 트리거 발생됨');
         
 /*
-새로운 레코드가 입력되었으므로 임시테입르 :new에 저장되고 해당 레코드를
+새로운 레코드가 입력되었으므로 임시테이블 :new에 저장되고 해당 레코드를
 통해 backup 테이블에 입력할 수 있다.
 이와 같이 임시테이블은 행단위 트리거에서만 사용할 수 있다.
 */
@@ -516,3 +516,107 @@ select * from trigger_dept_original;
 백업테이블에는 1개의 레코드만 삽입된다.
 */
 select * from trigger_dept_backup;
+
+--------------------------------------------------------------------------------
+
+create table sh_product_code (
+    p_code number(10) primary key,
+    category_name varchar2(50) not null
+);
+
+create table sh_goods (
+    g_idx number(10) primary key,
+    goods_name varchar2(50) not null,
+    goods_price number not null,
+    regidate date not null,
+    p_code number not null
+        references sh_product_code (p_code)
+);
+
+create table sh_goods_log (
+    log_idx number primary key,
+    goods_name varchar2(50) not null,
+    goods_idx number not null,
+    p_action varchar2(10) not null
+        check(p_action in ('Insert', 'Delete')) 
+);
+
+create sequence seq_total_idx
+    increment by 1
+    start with 1
+    minvalue 1
+    nomaxvalue
+    nocycle
+    nocache;
+
+insert into sh_product_code values (seq_total_idx.nextval, '가전');
+insert into sh_product_code values (seq_total_idx.nextval, '도서');
+insert into sh_product_code values (seq_total_idx.nextval, '의류');
+insert into sh_product_code values (seq_total_idx.nextval, '식품');
+
+insert into sh_goods values (seq_total_idx.nextval, '냉장고', 2000000, 
+    to_date('2025-04-13', 'yyyy-mm-dd'), 1);
+insert into sh_goods values (seq_total_idx.nextval, '세탁기', 1500000, 
+    to_date('2025-04-12', 'yyyy-mm-dd'), 1);
+
+insert into sh_goods values (seq_total_idx.nextval, '사피엔스', 20000, 
+    to_date('2025-04-11', 'yyyy-mm-dd'), 2);
+insert into sh_goods values (seq_total_idx.nextval, '총균쇠', 30000, 
+    to_date('2025-04-10', 'yyyy-mm-dd'), 2);
+
+insert into sh_goods values (seq_total_idx.nextval, '롱패딩', 200000, 
+    to_date('2025-04-09', 'yyyy-mm-dd'), 3);
+insert into sh_goods values (seq_total_idx.nextval, '레깅스', 40000, 
+    to_date('2025-04-08', 'yyyy-mm-dd'), 3);
+
+insert into sh_goods values (seq_total_idx.nextval, '라면', 10000, 
+    to_date('2025-04-07', 'yyyy-mm-dd'), 4);
+insert into sh_goods values (seq_total_idx.nextval, '김치', 50000, 
+    to_date('2025-04-06', 'yyyy-mm-dd'), 4);
+
+SELECT * FROM sh_goods;
+
+create or replace procedure ShopUpdateGoods (
+    g_  name in varchar2,
+    price in number,
+    code in number,
+    idx number,
+    returnVal out number
+)
+is
+begin
+    update sh_goods
+    set 
+        goods_name = g_name,
+        goods_price = price,
+        p_code = code
+    where
+        g_idx = idx;
+
+    if sql%rowcount > 0 then
+        returnVal := 1;
+    else
+        returnVal := 0;
+    
+    commit;
+    
+    end if;
+end;
+/
+
+create or replace procedure ShopDeleteGoods (
+    idx in number,
+    returnVal out number
+)
+is
+begin
+    delete from sh_goods where g_idx = idx;
+    
+    if sql%rowcount > 0 then
+        returnVal := 1;
+    else
+        returnVal := 0;
+
+    end if;
+end;
+/
