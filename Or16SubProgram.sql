@@ -524,6 +524,9 @@ create table sh_product_code (
     category_name varchar2(50) not null
 );
 
+alter table sh_product_code modify p_code number;
+desc sh_product_code;
+
 create table sh_goods (
     g_idx number(10) primary key,
     goods_name varchar2(50) not null,
@@ -532,6 +535,8 @@ create table sh_goods (
     p_code number not null
         references sh_product_code (p_code)
 );
+
+alter table sh_goods modify g_idx number;
 
 create table sh_goods_log (
     log_idx number primary key,
@@ -577,7 +582,7 @@ insert into sh_goods values (seq_total_idx.nextval, '김치', 50000,
 SELECT * FROM sh_goods;
 
 create or replace procedure ShopUpdateGoods (
-    g_  name in varchar2,
+    g_name in varchar2,
     price in number,
     code in number,
     idx number,
@@ -617,6 +622,44 @@ begin
     else
         returnVal := 0;
 
+    end if;
+end;
+/
+
+create or replace trigger shop_log_trigger
+    after
+    insert or delete
+    on sh_goods
+    for each row
+begin
+    if inserting then
+        dbms_output.put_line('insert 트리거 발생됨');
+        insert into sh_goods_log (
+            log_idx,
+            goods_name,
+            goods_idx,
+            p_action
+        )
+        values (
+            seq_total_idx.nextval,
+            :new.goods_name,
+            :new.g_idx,
+            'Insert'
+        );
+    elsif deleting then
+    dbms_output.put_line('delete 트리거 발생됨');
+        insert into sh_goods_log (
+            log_idx,
+            goods_name,
+            goods_idx,
+            p_action
+        )
+        values (
+            seq_total_idx.nextval,
+            :old.goods_name,
+            :old.g_idx,
+            'Delete'
+        ); 
     end if;
 end;
 /
