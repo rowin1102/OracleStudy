@@ -276,6 +276,18 @@ from emp
 where sal < (select sal from emp where job = 'ANALYST') and
     job != 'ANALYST';
 
+-- 담당업무를 SALESMAN으로 변경하면 4개의 레코드가 인출된다.
+SELECT * FROM emp where job='SALESMAN';
+/*
+따라서 단일행 연산자로 쿼리문을 작성하면 에러가 발생되므로 이때는
+복수행 연산자인 all 혹은 any를 사용해야 한다.
+*/
+select 
+    empno, ename, job, sal  
+from emp 
+where sal < all (select sal from emp where job = 'SALESMAN') and
+    job != 'SALESMAN';
+
 /*
 07.이름에 K가 포함된 사원과 같은 부서에서 일하는 사원의 
 사원번호와 이름을 표시하는 질의를 작성하시오.
@@ -289,8 +301,7 @@ where deptno in (select deptno from emp where ename like '%K%');
 select
     ename, deptno, job
 from emp
-    inner join dept using(deptno)
-where loc = 'DALLAS';
+where deptno = (select deptno from dept where loc = 'DALLAS');
 
 /*
 09.평균 급여 보다 많은 급여를 받고 이름에 K가 포함된 사원과 같은 
@@ -317,4 +328,3 @@ select
 from emp
 where deptno in (select deptno from emp where ename = 'BLAKE') and
     ename != 'BLAKE';
-dd
