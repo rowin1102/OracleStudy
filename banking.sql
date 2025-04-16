@@ -20,9 +20,24 @@ commit;
 
 SELECT * FROM banking;
 
+DELETE FROM banking
+WHERE account = '1111';
 
+DROP SEQUENCE seq_banking_idx;
 
+create or replace procedure DeleteAccount (
+    iaccount in varchar2,
+    returnVal out number
+)
+is
+begin
+    delete from banking where account = iaccount;
+    
+    if sql%rowcount > 0 then
+        returnVal := 1;
+    else
+        returnVal := 0;
 
-
-
-
+    end if;    
+end;
+/
